@@ -1,0 +1,8 @@
+[
+  {
+    "kalshiMarketId": "kalshi-btc-100k-2026",
+    "polymarketMarketId": "poly-btc-100k-2026",
+    "notes": "Manual confirmation example only. Verify wording, oracle/source, deadlines, and cancellation behavior before relying on this pair.",
+    "resolutionRisk": "LOW"
+  }
+]

@@ -1,0 +1,92 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model PlatformMarket {
+  id                 String   @id @default(cuid())
+  platform           String
+  platformMarketId   String
+  ticker             String?
+  conditionId        String?
+  title              String
+  description        String?
+  rules              String?
+  category           String?
+  status             String
+  closeTime          DateTime?
+  expirationTime     DateTime?
+  resolutionSource   String?
+  rawJson            String
+  createdAt          DateTime @default(now())
+  updatedAt          DateTime @updatedAt
+
+  kalshiPairs        MatchedMarketPair[] @relation("KalshiMarket")
+  polymarketPairs    MatchedMarketPair[] @relation("PolymarketMarket")
+  snapshots          OrderbookSnapshot[]
+
+  @@unique([platform, platformMarketId])
+  @@index([platform, status])
+  @@index([conditionId])
+}
+
+model MatchedMarketPair {
+  id                    String   @id @default(cuid())
+  kalshiMarketId         String
+  polymarketMarketId     String
+  matchScore             Float
+  matchStatus            String
+  resolutionRisk         String
+  notes                  String?
+  manualOverride         Boolean  @default(false)
+  createdAt              DateTime @default(now())
+  updatedAt              DateTime @updatedAt
+
+  kalshiMarket           PlatformMarket @relation("KalshiMarket", fields: [kalshiMarketId], references: [id])
+  polymarketMarket       PlatformMarket @relation("PolymarketMarket", fields: [polymarketMarketId], references: [id])
+  opportunities          Opportunity[]
+
+  @@unique([kalshiMarketId, polymarketMarketId])
+  @@index([matchStatus, resolutionRisk])
+}
+
+model OrderbookSnapshot {
+  id                    String   @id @default(cuid())
+  platformMarketId      String
+  bestYesBid            Float?
+  bestYesAsk            Float?
+  bestNoBid             Float?
+  bestNoAsk             Float?
+  depth                 String
+  sourceTimestamp       DateTime
+  fetchedAt             DateTime @default(now())
+
+  market                PlatformMarket @relation(fields: [platformMarketId], references: [id])
+
+  @@index([platformMarketId, fetchedAt])
+}
+
+model Opportunity {
+  id                    String   @id @default(cuid())
+  matchedPairId          String
+  direction              String
+  quantity               Float
+  grossCost              Float
+  estimatedFees          Float
+  riskBuffer             Float
+  netEdge                Float
+  netEdgeBps             Float
+  maxSize                Float
+  staleAgeMs             Int
+  riskFlags              String
+  detectedAt             DateTime @default(now())
+
+  pair                  MatchedMarketPair @relation(fields: [matchedPairId], references: [id])
+
+  @@index([detectedAt])
+  @@index([netEdge])
+}

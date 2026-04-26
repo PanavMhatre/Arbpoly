@@ -1,0 +1,38 @@
+{
+  "name": "arbpoly",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "scan:once": "node --import tsx src/workers/scanOnce.ts",
+    "scan:watch": "node --import tsx src/workers/scanWatch.ts",
+    "discover": "node --import tsx src/workers/discover.ts",
+    "match": "node --import tsx src/workers/match.ts",
+    "prisma:generate": "prisma generate",
+    "db:push": "prisma db push"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.22.0",
+    "next": "^16.2.4",
+    "react": "^19.1.1",
+    "react-dom": "^19.1.1",
+    "zod": "^3.23.8"
+  },
+  "devDependencies": {
+    "@types/node": "^22.9.0",
+    "@types/react": "^19.1.12",
+    "@types/react-dom": "^19.1.9",
+    "prisma": "^5.22.0",
+    "tsx": "^4.19.2",
+    "typescript": "^5.6.3",
+    "vitest": "^4.1.5"
+  },
+  "overrides": {
+    "postcss": "^8.5.10"
+  }
+}
